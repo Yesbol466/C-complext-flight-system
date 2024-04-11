@@ -3,19 +3,19 @@ using System.Timers;
 
 namespace OOD_first_project
 {
-   
-    public class GUIAdapter:IGUIUpdater
+
+    public class GUIAdapter : IGUIUpdater
     {
-        
+
 
         public void UpdateGUIPeriodically()
         {
             var allData = new FileReader().ReadFromFile("example_data.ftr");
-           
+
 
             var airports = HelperMethods.LoadAirports(allData);
             var flights = HelperMethods.LoadFlights(allData);
-            
+
             while (true)
             {
                 FlightsGUIData flightsGUIData = new FlightsGUIData();
@@ -26,20 +26,20 @@ namespace OOD_first_project
                         continue;
                     if (DateTime.UtcNow < DateTime.Parse(flight.TakeoffTime))
                         continue;
-                    updateFlightOnMap(flight,airports);
+                    updateFlightOnMap(flight, airports);
                     var flightGUI = FlightDataConverter.ConvertToFlightGUI(flight, airports);
-                   
-                    
+
+
                     list.Add(flightGUI);
                 }
-                
+
                 flightsGUIData.UpdateFlights(list);
                 Runner.UpdateGUI(flightsGUIData);
                 list.Clear();
                 Thread.Sleep(1000);
             }
         }
-       public void UpdateGUIPeriodicallyInStream()
+        public void UpdateGUIPeriodicallyInStream()
         {
             var allDatabin = new Server("example_data.ftr").ReadFile();
             var airportsinStream = HelperMethods.LoadAirports(allDatabin);
@@ -56,8 +56,8 @@ namespace OOD_first_project
                         continue;
                     updateFlightOnMap(flight, airportsinStream);
                     var flightGUI = FlightDataConverter.ConvertToFlightGUI(flight, airportsinStream);
-                   
-                    
+
+
                     list.Add(flightGUI);
                 }
                 flightsGUIData.UpdateFlights(list);
@@ -72,7 +72,7 @@ namespace OOD_first_project
             var origin = airports[flight.OriginID];
             var destination = airports[flight.TargetID];
             var currentPosition = CalculateCurrentPosition(origin, destination, flight.TakeoffTime, flight.LandingTime);
-            
+
             flight.Latitute = currentPosition.X;
             flight.Longitude = currentPosition.Y;
         }

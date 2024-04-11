@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OOD_first_project
 {
-   public static class HelperMethods
+    public static class HelperMethods
     {
         public static List<Flight> LoadFlights(List<Data> datas)
         {

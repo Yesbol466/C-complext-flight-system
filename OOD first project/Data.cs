@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using OOD_first_project;
+using System.Xml.Linq;
 
 [JsonDerivedType(typeof(Crew))]
 [JsonDerivedType(typeof(AirPort))]
@@ -62,7 +64,7 @@ public class Passenger:Data
     }
 }
 
-public class CargoPlane:Data
+public class CargoPlane:Data,IReportable
 {
    
     public string Serial { get; set; }
@@ -76,6 +78,12 @@ public class CargoPlane:Data
         Country = country;
         Model = model;
         MaxLoad = maxLoad;
+    }
+    public string Name => Model;
+    public string ReportIdentifier => $"Serial: {Serial}, Type: {Name}";
+    public string Accept(INewsVisitor visitor)
+    {
+        return visitor.Visit(this);
     }
 }
 
@@ -94,7 +102,7 @@ public class Cargo:Data
     }
 }
 
-public class PassengerPlane:Data
+public class PassengerPlane:Data, IReportable
 {
     
     public string Serial { get; set; }
@@ -114,9 +122,15 @@ public class PassengerPlane:Data
         BusinessClassSize = businessClassSize;
         EconomyClassSize = economyClassSize;
     }
+    public string Name => Model;
+    public string ReportIdentifier => $"Serial: {Serial}, Type: {Name}";
+    public string Accept(INewsVisitor visitor)
+    {
+        return visitor.Visit(this);
+    }
 }
 
-public class AirPort:Data
+public class AirPort:Data,IReportable
 {
     
     public string Name { get; set; }   
@@ -134,6 +148,11 @@ public class AirPort:Data
         Latitude = latitude;
         AMSL = aMSL;
         Country = country;
+    }
+    public string ReportIdentifier => Name;
+    public string Accept(INewsVisitor visitor)
+    {
+        return visitor.Visit(this);
     }
 }
 
