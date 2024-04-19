@@ -61,6 +61,59 @@ namespace OOD_first_project
 
             return datas;
         }
+        public List<Data> FileReadUpdate(string filePath)
+        {
+            List<Data> dataList = new List<Data>();
+            try
+            {
+                string[] lines = File.ReadAllLines(filePath);
+                foreach (var line in lines)
+                {
+                    string[] parts = line.Split(',');
+                    Data data = ParseData(parts);
+                    if (data != null)
+                    {
+                        dataList.Add(data);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading file {filePath}: {ex.Message}");
+            }
+            return dataList;
+        }
+        private Data ParseData(string[] parts)
+        {
+            if (parts == null || parts.Length == 0)
+            {
+                Console.WriteLine("Empty or null line provided to ParseData");
+                return null; 
+            }
+
+            string typeKey = parts[0]; 
+
+            if (objectFactory.TryGetValue(typeKey, out Func<string[], Data> factory))
+            {
+                try
+                {
+                    return factory(parts);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error parsing data for type {typeKey}: {ex.Message}");
+                    Console.WriteLine($"Data: {string.Join(", ", parts)}");
+                    return null; 
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No factory found for type {typeKey}");
+                return null;
+            }
+        }
+
+
     }
 
 }

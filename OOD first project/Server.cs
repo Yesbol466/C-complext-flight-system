@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace OOD_first_project
 {
-    public class Server
+    public class Server//observer that handles all handlers neededd
+        //multiple interface
+        //use of network source simulator
     {
         NetworkSourceSimulator.NetworkSourceSimulator Simulator;
         public void StartServer()
