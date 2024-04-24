@@ -1,33 +1,75 @@
 ﻿using OOD_first_project.Factories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using NetworkSourceSimulator;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OOD_first_project
 {
-    public class Server//observer that handles all handlers neededd
+    public class Server :IObservable //observer that handles all handlers neededd
         //multiple interface
         //use of network source simulator
     {
         NetworkSourceSimulator.NetworkSourceSimulator Simulator;
+        List<iObserver> Observers;
         public void StartServer()
         {
-            try
+            Thread serverThread = new Thread(() =>
             {
-                Simulator.Run();
-            }
-            catch (ThreadInterruptedException)
-            {
-                Console.WriteLine("exiting");
-            }
+                try
+                {
+                    Simulator.Run();
+                }
+                catch (ThreadInterruptedException)
+                {
+                    Console.WriteLine("Server exiting cleanly.");
+                }
+            });
+            serverThread.Start();
         }
         public Server(string path)
         {
-            Simulator = new NetworkSourceSimulator.NetworkSourceSimulator(path,0,0);
-
+          this.Observers = new List<iObserver>();
+          Simulator = new NetworkSourceSimulator.NetworkSourceSimulator(path,0,0);
+            SubcribeToDataSourceEvents();
+           
+            
         }
+        public void SubcribeToDataSourceEvents()
+        {
+         Simulator.OnContactInfoUpdate += NotifyContactInfoChange;
+            Simulator.OnIDUpdate += NotifyIDchange;
+            Simulator.OnPositionUpdate += NotifyPositionChange;
+        }
+        public void AddObserver(iObserver observer)
+        {
+            Observers.Add(observer);
+        }
+        public void RemoveObserver(iObserver observer)
+        {
+            Observers.Remove(observer);
+        }
+        public void NotifyIDchange(object sender,IDUpdateArgs iDUpdateArgs)
+        {
+            foreach (var observer in Observers)
+            {
+                observer.UpdateID(iDUpdateArgs);
+            }
+        }
+        public void NotifyPositionChange(object sender,PositionUpdateArgs positionUpdateArgs)
+        {
+            foreach (var observer in Observers)
+            {
+                observer.UpdatePosition(positionUpdateArgs);
+            }
+        }
+        public void NotifyContactInfoChange(object sender,ContactInfoUpdateArgs contactInfoUpdateArgs)
+        {
+            foreach (var observer in Observers)
+            {
+                observer.UpdateContactInfo(contactInfoUpdateArgs);
+            }
+        }
+        
         public List<Data> ReadFile()
         {
 

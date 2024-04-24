@@ -11,7 +11,7 @@ namespace OOD_first_project
             var origin = airports[flight.OriginID];
             var destination = airports[flight.TargetID];
 
-            var rotation = CalculateRotation(origin, destination);
+            var rotation = CalculateRotation(flight, destination);
             return new FlightGUI
             {
                 ID = flight.ID,
@@ -23,10 +23,10 @@ namespace OOD_first_project
 
 
 
-        private static double CalculateRotation(AirPort origin, AirPort destination)
+        private static double CalculateRotation(Flight flight, AirPort destination)
         {
-            double deltaY = destination.Latitude - origin.Latitude;
-            double deltaX = destination.Longitude - origin.Longitude;
+            double deltaY = destination.Latitude - flight.Latitute;
+            double deltaX = destination.Longitude - flight.Longitude;
 
             double angleInRadians = Math.Atan2(deltaX, deltaY);
             return angleInRadians;

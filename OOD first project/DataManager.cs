@@ -2,26 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using NetworkSourceSimulator;
 
 namespace OOD_first_project
 {
-    public class DataManager
+    public class DataManager:iObserver
     {
         List<Data> dataObjects;
 
         public DataManager(List<Data> initialData)
         {
-            dataObjects = initialData ?? new List<Data>(); 
+            dataObjects = initialData;
+            File.AppendAllText(GetLogFileName(), "app started" + Environment.NewLine);
         }
 
-        public void SubscribeToDataSourceEvents(DataSource dataSource)
-        {
-            dataSource.OnIDUpdate += HandleIDUpdate;
-            dataSource.OnPositionUpdate += HandlePositionUpdate;
-            dataSource.OnContactInfoUpdate += HandleContactInfoUpdate;
-        }
+       
 
-        private void HandleIDUpdate(object sender, IDUpdateArgs e)
+        public void UpdateID(IDUpdateArgs e)
         {
             var item = dataObjects.FirstOrDefault(x => x.ID == e.ObjectID);
             if (item != null)
@@ -33,18 +30,20 @@ namespace OOD_first_project
             else
             {
                 LogError($"No object found with ID {e.ObjectID}");
+                
             }
         }
 
-        private void HandlePositionUpdate(object sender, PositionUpdateArgs e)
+        public void UpdatePosition(PositionUpdateArgs e)
         {
-            var item = dataObjects.OfType<AirPort>().FirstOrDefault(x => x.ID == e.ObjectID);
+            var item = dataObjects.OfType<Flight>().FirstOrDefault(x => x.ID == e.ObjectID);
             if (item != null)
             {
                 LogBeforeChange(item);
                 item.Longitude = e.Longitude;
-                item.Latitude = e.Latitude;
+                item.Latitute = e.Latitude;
                 item.AMSL = e.AMSL;
+                Console.WriteLine($"No AirPort found with ID {e.ObjectID}");
                 LogAfterChange(item);
             }
             else
@@ -53,9 +52,9 @@ namespace OOD_first_project
             }
         }
 
-        private void HandleContactInfoUpdate(object sender, ContactInfoUpdateArgs e)
+        public void UpdateContactInfo(ContactInfoUpdateArgs e)
         {
-            var item = dataObjects.OfType<Passenger>().FirstOrDefault(x => x.ID == e.ObjectID);
+            var item = dataObjects.OfType<Crew>().FirstOrDefault(x => x.ID == e.ObjectID);
             if (item != null)
             {
                 LogBeforeChange(item);
@@ -71,17 +70,42 @@ namespace OOD_first_project
 
         private void LogBeforeChange(Data item)
         {
-            string logMessage = $"Before Update: {item}";
+            string logMessage = $"Before Update: {item.ID}";
+            Console.WriteLine(logMessage);
+            File.AppendAllText(GetLogFileName(), logMessage + Environment.NewLine);
+        }
+        private void LogBeforeChange(Crew item)
+        {
+            string logMessage = $"Before Update {item.ID}: Phone = {item.Phone}, email = {item.Email}";
+            Console.WriteLine(logMessage);
+            File.AppendAllText(GetLogFileName(), logMessage + Environment.NewLine);
+        }
+        private void LogBeforeChange(Flight item)
+        {
+            string logMessage = $"Before Update {item.ID} :item latitude =  {item.Latitute},longtude = {item.Longitude}";
             Console.WriteLine(logMessage);
             File.AppendAllText(GetLogFileName(), logMessage + Environment.NewLine);
         }
 
         private void LogAfterChange(Data item)
         {
-            string logMessage = $"After Update: {item}";
+            string logMessage = $"After Update: {item.ID}";
             Console.WriteLine(logMessage);
             File.AppendAllText(GetLogFileName(), logMessage + Environment.NewLine);
         }
+        private void LogAfterChange(Crew item)
+        {
+            string logMessage = $"after Update {item.ID}: Phone = {item.Phone}, email = {item.Email}";
+            Console.WriteLine(logMessage);
+            File.AppendAllText(GetLogFileName(), logMessage + Environment.NewLine);
+        }
+        private void LogAfterChange(Flight item)
+        {
+            string logMessage = $"after Update {item.ID} :item latitude =  {item.Latitute},longtude = {item.Longitude}";
+            Console.WriteLine(logMessage);
+            File.AppendAllText(GetLogFileName(), logMessage + Environment.NewLine);
+        }
+
 
         private void LogError(string message)
         {
@@ -90,7 +114,7 @@ namespace OOD_first_project
 
         private string GetLogFileName()
         {
-            return $"Log_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+            return $"LogSomething{DateTime.Now:yyyyMMdd}.txt";
         }
     }
 }

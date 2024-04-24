@@ -8,7 +8,7 @@ namespace OOD_first_project
 {
     public interface IGUIUpdater
     {
-        public void UpdateGUIPeriodically();
+        public void UpdateGUIPeriodically(List<Data> datas);
         public void UpdateGUIPeriodicallyInStream();
 
     }

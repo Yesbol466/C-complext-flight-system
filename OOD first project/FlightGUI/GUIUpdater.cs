@@ -8,9 +8,9 @@ namespace OOD_first_project
     {
 
 
-        public void UpdateGUIPeriodically()
+        public void UpdateGUIPeriodically(List<Data> datas)
         {
-            var allData = new FileReader().ReadFromFile("example_data.ftr");
+            var allData = datas;
 
 
             var airports = HelperMethods.LoadAirports(allData);
@@ -71,26 +71,30 @@ namespace OOD_first_project
         {
             var origin = airports[flight.OriginID];
             var destination = airports[flight.TargetID];
-            var currentPosition = CalculateCurrentPosition(origin, destination, flight.TakeoffTime, flight.LandingTime);
+            var currentPosition = CalculateCurrentPosition(flight,origin, destination, flight.TakeoffTime, flight.LandingTime);
 
             flight.Latitute = currentPosition.X;
             flight.Longitude = currentPosition.Y;
         }
-        private static (float Y, float X) CalculateCurrentPosition(AirPort origin, AirPort destination, string takeoffTime, string landingTime)
+        private static (float Y, float X) CalculateCurrentPosition(Flight flight,AirPort origin, AirPort destination, string takeoffTime, string landingTime)
         {
             DateTime takeoff = DateTime.Parse(takeoffTime);
             DateTime landing = DateTime.Parse(landingTime);
             DateTime now = DateTime.UtcNow;
+            if (landing < takeoff)
+            {
+                landing.AddDays(1);
+            }
 
             if (now < takeoff) return (origin.Longitude, origin.Latitude);
             if (now > landing) return (destination.Longitude, destination.Latitude);
-
+            
             double totalFlightDuration = (landing - takeoff).TotalSeconds;
             double elapsedFlightDuration = (now - takeoff).TotalSeconds;
             double progress = elapsedFlightDuration / totalFlightDuration;
-
-            double currentLongitude = origin.Longitude + (destination.Longitude - origin.Longitude) * progress;
-            double currentLatitude = origin.Latitude + (destination.Latitude - origin.Latitude) * progress;
+            var remainingTime = (landing - now).TotalSeconds;
+            double currentLongitude = flight.Longitude + (destination.Longitude - flight.Longitude) / remainingTime;
+            double currentLatitude = flight.Latitute + (destination.Latitude - flight.Latitute) /remainingTime;
 
             return ((float)currentLongitude, (float)currentLatitude);
         }

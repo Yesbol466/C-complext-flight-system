@@ -22,16 +22,12 @@ namespace OOD_first_project
             //Server server = new Server("example_data.ftr");
             //server.ReadFile();
             //par3
-            //Thread thread = new Thread(new ThreadStart(Runner.Run));
-            //thread.Start();
-            //GUIAdapter adapter = new GUIAdapter();
-            //adapter.UpdateGUIPeriodically();
 
             //adapter.UpdateGUIPeriodicallyInStream();
             //GUIUpdater.UpdateGUIPeriodically();
             //GUIUpdater.UpdateGUIPeriodicallyInStream();
             //Console.WriteLine("GUI is running. Press any key to exit...");
-            
+
             //Console.ReadKey();
             //if (thread.IsAlive)
             //{
@@ -51,18 +47,29 @@ namespace OOD_first_project
             //};
             //NewsGenerator.NewsCommands(newsProviders, reportables);
             //part5
-            string dataFilePath = "example.ftre";
             FileReader fileReader = new FileReader();
-            List<Data> initialData = fileReader.FileReadUpdate(dataFilePath);
+            List<Data> initialData = fileReader.ReadFromFile("example_data.ftr");
+            if (initialData == null || initialData.Count == 0)
+            {
+                Console.WriteLine("No initial data found. Exiting program.");
+                return;
+            }
+            DataManager dataManager = new DataManager(initialData);// Ensure you provide the correct file path
 
-            DataSource dataSource = new DataSource();
-            DataManager dataManager = new DataManager(initialData);
-            dataManager.SubscribeToDataSourceEvents(dataSource);
+            Thread thread = new Thread(new ThreadStart(Runner.Run));
+            thread.Start();
+            GUIAdapter adapter = new GUIAdapter();
+            Thread thread1 = new Thread(()=> adapter.UpdateGUIPeriodically(initialData));
+            thread1.Start();
+            Thread.Sleep(5000);
 
-            dataSource.SimulateUpdates(); 
+            // Setup the server with the path to simulation data and the DataSource
+            string simulatorDataPath = "example.ftre";
+            Server server = new Server(simulatorDataPath);
+            server.AddObserver(dataManager);
+            server.StartServer();
 
-            
-            Console.WriteLine("Updates processed. Press any key to exit...");
+            Console.WriteLine("Simulation is running. Press any key to exit...");
             Console.ReadKey();
 
 

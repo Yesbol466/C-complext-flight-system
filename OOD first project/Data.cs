@@ -184,23 +184,3 @@ public class Flight:Data
         LoadIDs = loadids;
     }
 }
-public class IDUpdateArgs : EventArgs
-{
-    public UInt64 ObjectID { get; init; }
-    public UInt64 NewObjectID { get; init; }
-}
-
-public class PositionUpdateArgs : EventArgs
-{
-    public UInt64 ObjectID { get; init; }
-    public Single Longitude { get; init; }
-    public Single Latitude { get; init; }
-    public Single AMSL { get; init; }
-}
-
-public class ContactInfoUpdateArgs : EventArgs
-{
-    public UInt64 ObjectID { get; init; }
-    public string PhoneNumber { get; init; }
-    public string EmailAddress { get; init; }
-}
