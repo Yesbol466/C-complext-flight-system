@@ -54,16 +54,16 @@ namespace OOD_first_project
                 Console.WriteLine("No initial data found. Exiting program.");
                 return;
             }
-            DataManager dataManager = new DataManager(initialData);// Ensure you provide the correct file path
+            DataManager dataManager = new DataManager(initialData);
 
             Thread thread = new Thread(new ThreadStart(Runner.Run));
             thread.Start();
             GUIAdapter adapter = new GUIAdapter();
             Thread thread1 = new Thread(()=> adapter.UpdateGUIPeriodically(initialData));
             thread1.Start();
-            Thread.Sleep(5000);
+            Thread.Sleep(10000);
 
-            // Setup the server with the path to simulation data and the DataSource
+           
             string simulatorDataPath = "example.ftre";
             Server server = new Server(simulatorDataPath);
             server.AddObserver(dataManager);
