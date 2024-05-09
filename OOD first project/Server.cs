@@ -5,9 +5,7 @@ using System.Threading.Tasks;
 
 namespace OOD_first_project
 {
-    public class Server :IObservable //observer that handles all handlers neededd
-        //multiple interface
-        //use of network source simulator
+    public class Server :IObservable 
     {
         NetworkSourceSimulator.NetworkSourceSimulator Simulator;
         List<iObserver> Observers;

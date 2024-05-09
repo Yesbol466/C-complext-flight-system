@@ -36,15 +36,16 @@ namespace OOD_first_project
 
         public void UpdatePosition(PositionUpdateArgs e)
         {
-            var item = dataObjects.OfType<Flight>().FirstOrDefault(x => x.ID == e.ObjectID);
-            if (item != null)
+            var item = dataObjects.FirstOrDefault(x => x.ID == e.ObjectID);
+            if (item != null && item.Type == "Flight")
             {
-                LogBeforeChange(item);
-                item.Longitude = e.Longitude;
-                item.Latitute = e.Latitude;
-                item.AMSL = e.AMSL;
+                var flight = item as Flight;
+                LogBeforeChange(flight);
+                flight.Longitude = e.Longitude;
+                flight.Latitute = e.Latitude;
+                flight.AMSL = e.AMSL;
                 Console.WriteLine($"No AirPort found with ID {e.ObjectID}");
-                LogAfterChange(item);
+                LogAfterChange(flight);
             }
             else
             {
@@ -54,13 +55,14 @@ namespace OOD_first_project
 
         public void UpdateContactInfo(ContactInfoUpdateArgs e)
         {
-            var item = dataObjects.OfType<Crew>().FirstOrDefault(x => x.ID == e.ObjectID);
-            if (item != null)
+            var item = dataObjects.FirstOrDefault(x => x.ID == e.ObjectID);
+            if (item != null && item.Type == "Crew")
             {
-                LogBeforeChange(item);
-                item.Phone = e.PhoneNumber;
-                item.Email = e.EmailAddress;
-                LogAfterChange(item);
+                var crew= item as Crew;
+                LogBeforeChange(crew);
+                crew.Phone = e.PhoneNumber;
+                crew.Email = e.EmailAddress;
+                LogAfterChange(crew);
             }
             else
             {

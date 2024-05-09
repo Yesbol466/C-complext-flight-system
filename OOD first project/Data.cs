@@ -15,10 +15,12 @@ using System.Xml.Linq;
 
 public abstract class Data
 {
+    public string Type { get; set;}
     public UInt64 ID { get; set; }
-    public Data(UInt64 ID)
+    public Data(UInt64 ID, string type)
     {
         this.ID = ID;
+        Type = type;
     }
 }
 
@@ -31,7 +33,7 @@ public class Crew:Data
     public string Email { get; set; }
     public UInt16 practice { get; set; }
     public string Role { get; set; }
-    public Crew(ulong iD,string name,ulong age, string phone, string email, ushort practice, string role):base(iD)
+    public Crew(ulong iD,string name,ulong age, string phone, string email, ushort practice, string role):base(iD,"Crew")
     {
         
         Name = name;
@@ -52,7 +54,7 @@ public class Passenger:Data
     public string Email { get; set; }
     public string Class { get; set; }
     public UInt64 Miles { get; set; }
-    public Passenger(ulong iD,string name,ulong age,  string phone, string email, string @class, ulong miles):base(iD)
+    public Passenger(ulong iD,string name,ulong age,  string phone, string email, string @class, ulong miles):base(iD, "Passenger")
     {
        
         this.name = name;
@@ -71,7 +73,7 @@ public class CargoPlane:Data,IReportable
     public string Country { get; set; }
     public string Model { get; set; }
     public Single MaxLoad { get; set; }
-    public CargoPlane(ulong iD, string serial, string country, string model, float maxLoad):base(iD) 
+    public CargoPlane(ulong iD, string serial, string country, string model, float maxLoad):base(iD,"CargoPlane") 
     {
         
         Serial = serial;
@@ -93,7 +95,7 @@ public class Cargo:Data
     public Single Weight { get; set; }
     public string Country { get; set; }
     public string Description { get; set; }
-    public Cargo(ulong iD, float weight, string country, string description):base(iD)
+    public Cargo(ulong iD, float weight, string country, string description):base(iD,"Cargo")
     {
         
         Weight = weight;
@@ -112,7 +114,7 @@ public class PassengerPlane:Data, IReportable
     public UInt16 FirstClassSize { get; set; }
     public UInt16 BusinessClassSize { get; set; }
     public UInt16 EconomyClassSize { get;set; }
-    public PassengerPlane(ulong iD,string serial, string country, string model, ushort firstClassSize, ushort businessClassSize, ushort economyClassSize):base(iD) 
+    public PassengerPlane(ulong iD,string serial, string country, string model, ushort firstClassSize, ushort businessClassSize, ushort economyClassSize):base(iD, "PassengerPlane") 
     {
         
         Serial = serial;
@@ -139,7 +141,7 @@ public class AirPort:Data,IReportable
     public Single Latitude { get; set; }
     public Single AMSL { get; set; }
     public string Country { get; set; }
-    public AirPort(ulong iD,string name, string code,float longitude, float latitude, float aMSL, string country):base(iD) 
+    public AirPort(ulong iD,string name, string code,float longitude, float latitude, float aMSL, string country):base(iD, "AirPort") 
     {
         
         Name = name;
@@ -169,7 +171,7 @@ public class Flight:Data
     public UInt64 PlaneID { get;set; }
     public List<ulong> CrewIDs { get; set; }
     public List<ulong> LoadIDs { get; set; }
-    public Flight(ulong iD, ulong originID, ulong targetID,string landingTime, string takeoffTime,float longitude, float latitute,float amsl,ulong planeID,   List<ulong> CrewiDs,List<ulong> loadids):base(iD) 
+    public Flight(ulong iD, ulong originID, ulong targetID,string landingTime, string takeoffTime,float longitude, float latitute,float amsl,ulong planeID,   List<ulong> CrewiDs,List<ulong> loadids):base(iD, "Flight") 
     {
         
         OriginID = originID;
