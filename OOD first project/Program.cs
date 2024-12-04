@@ -48,7 +48,7 @@ namespace OOD_first_project
             //NewsGenerator.NewsCommands(newsProviders, reportables);
             //part5
             FileReader fileReader = new FileReader();
-            List<Data> initialData = fileReader.ReadFromFile("example_data.ftr");
+            List<Data> initialData = fileReader.ReadFromFile("example_data.ftre");
             if (initialData == null || initialData.Count == 0)
             {
                 Console.WriteLine("No initial data found. Exiting program.");
